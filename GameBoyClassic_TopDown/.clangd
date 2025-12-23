@@ -1,0 +1,11 @@
+CompileFlags:
+  Add:
+    - nostdinc
+    
+    - -I../../../include/
+    - -I../../../include/gb
+    
+    # this is for game boy special types
+    - -D__SDCC=1
+    - -D__PORT_sm83         # Game Boy / sm83 port (GBDK-2020 4.x)
+    - -D__SDCC_REVISION=15000

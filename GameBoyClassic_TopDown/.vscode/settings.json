@@ -1,0 +1,17 @@
+{
+	"files.associations": {
+		"gb.h": "c",
+		"stdint.h": "c",
+		"entities.c": "cpp",
+		"life_sprite.h": "c",
+		"entities.h": "c",
+		"solider.h": "c"
+	},
+	"makefile.launchConfigurations": [
+		{
+			"cwd": "e:\\Lab\\GameBoyClassic\\GameBoyClassic_TopDown",
+			"binaryPath": "e:\\Lab\\GameBoyClassic\\GameBoyClassic_TopDown\\Example.gb",
+			"binaryArgs": []
+		}
+	]
+}

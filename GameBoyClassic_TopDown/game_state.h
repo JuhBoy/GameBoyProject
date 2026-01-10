@@ -46,6 +46,7 @@ uint8_t gs_get_entrance_index(void);
 
 // Controller ======
 void gs_set_player_state(ControllerState state, BOOLEAN reset_transition);
+void gs_toggle_pause_state(ControllerState otherState);
 ControllerState gs_get_player_state(void);
 
 #endif

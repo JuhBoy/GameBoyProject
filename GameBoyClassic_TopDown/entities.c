@@ -26,7 +26,7 @@ void update_velocity(EntitiesBank *entities, EntityId ett, Velocity velocity)
 
 void draw_entities(EntitiesBank *entities)
 {
-	for (int i = 0; i < entities->count; i++)
+	for (uint8_t i = 0; i < entities->count; i++)
 	{
 		fp16_t posx = entities->px[i];
 		fp16_t posy = entities->py[i];
@@ -49,6 +49,14 @@ void draw_entities(EntitiesBank *entities)
 
 		entities->px[i] = posx;
 		entities->py[i] = posy;
+	}
+}
+
+void hide_entities(EntitiesBank *entities)
+{
+	for (uint8_t i = 0; i < entities->count; i++)
+	{
+		move_sprite(i, 0, 0);
 	}
 }
 

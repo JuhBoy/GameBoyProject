@@ -4,8 +4,12 @@
 #include <stdint.h>
 #include <gb/gb.h>
 #include "math.c"
+#include "helpers.h"
 
-typedef uint8_t EntityId;
+typedef enum EntityId {
+	ETT_PLAYER = (u8)0,
+	ETT_GOBLIN = (u8)1,
+} EntityId;
 
 typedef struct Velocity
 {
@@ -13,7 +17,6 @@ typedef struct Velocity
 	uint8_t y;
 } Velocity;
 
-// all all game entities, light data
 typedef struct EntitiesBank
 {
 	EntityId tile_ids[40];
@@ -33,5 +36,6 @@ void init_sprites(EntitiesBank *entities);
 void update_velocity(EntitiesBank *entities, EntityId ett, Velocity velocity);
 void draw_entities(EntitiesBank *entities);
 void update_entity_relative(EntitiesBank *entities, uint8_t id, FPVec2 *entity_pos, PixelCoords *camera_pos);
+void hide_entities(EntitiesBank* entities);
 
 #endif

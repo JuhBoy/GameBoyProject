@@ -18,6 +18,18 @@ void gs_set_player_state(ControllerState state, BOOLEAN reset_transition)
 	}
 }
 
+void gs_toggle_pause_state(ControllerState state)
+{
+	if (GAME_STATE.controllerState == PAUSED)
+	{
+		GAME_STATE.controllerState = state;
+	}
+	else
+	{
+		GAME_STATE.controllerState = PAUSED;
+	}
+}
+
 ControllerState gs_get_player_state(void)
 {
 	return GAME_STATE.controllerState;
@@ -48,11 +60,11 @@ void gs_update_map(Maps map)
 	GAME_STATE.transitionState = 0;
 	GAME_STATE.controllerState = PLAYING;
 
-	MapDescriptor *des = gs_get_map_descriptor(map);
-	MapCoords spawn = {.x = des->spawn_pos.x, .y = des->spawn_pos.y};
+	MapDescriptor *map_desc = gs_get_map_descriptor(map);
+	MapCoords spawn = {.x = map_desc->spawn_pos.x, .y = map_desc->spawn_pos.y};
 
 	// NOTE(JUH): reserve one square black for transition at last index of VRAM bank
-	set_bkg_data(0, des->tiles_count, des->map_tiles);
+	set_bkg_data(0, map_desc->tiles_count, map_desc->map_tiles);
 	set_bkg_data(255, 1, black_square_sprite);
 }
 

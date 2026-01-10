@@ -27,18 +27,18 @@ Area                       Addr        Size        Decimal Bytes (Attributes)
      00000006  l__HEADER |    00000007  l__HEADER |    00000008  l__HEADER
      0000000C  l__GSINIT |    00000016  l__INITIA |    00000016  l__INITIA
      00000030  l__HEADER |    00000060  l__HEADER |    000000AB  l__HEADER
-     000001CA  l__HOME   |    00000200  s__CODE   |    0000080E  l__DATA  
+     000001DC  l__HOME   |    00000200  s__CODE   |    00000814  l__DATA  
      00002000  _rROMB0   |    00003000  _rROMB1   |    00004000  _rMBC7_SR
-     00004000  _rRAMB    |    00005D8F  l__CODE   |    00005F8F  s__HOME  
-     00006159  s__BASE   |    00006159  s__CODE_0 |    00006159  s__INITIA
-     00006159  s__LIT    |    0000616F  s__GSINIT |    0000617B  s__GSFINA
+     00004000  _rRAMB    |    0000648C  l__CODE   |    0000668C  s__HOME  
+     00006868  s__BASE   |    00006868  s__CODE_0 |    00006868  s__INITIA
+     00006868  s__LIT    |    0000687E  s__GSINIT |    0000688A  s__GSFINA
      00008000  __VRAM    |    00008000  __VRAM800 |    00008800  __VRAM880
      00009000  __VRAM900 |    00009800  __SCRN0   |    00009C00  __SCRN1  
      0000A000  __SRAM    |    0000A000  _rMBC7_LA |    0000A010  _rMBC7_LA
      0000A020  _rMBC7_AC |    0000A030  _rMBC7_AC |    0000A040  _rMBC7_AC
      0000A050  _rMBC7_AC |    0000C000  __RAM     |    0000C000  _shadow_O
-     0000C0A0  s__DATA   |    0000C8AE  s__BSS    |    0000C8AE  s__INITIA
-     0000C8C4  s__HEAP   |    0000C8C4  s__HEAP_E |    0000D000  __RAMBANK
+     0000C0A0  s__DATA   |    0000C8B4  s__BSS    |    0000C8B4  s__INITIA
+     0000C8CA  s__HEAP   |    0000C8CA  s__HEAP_E |    0000D000  __RAMBANK
      0000E000  .STACK    |    0000FE00  __OAMRAM  |    0000FF00  _P1_REG  
      0000FF00  __IO      |    0000FF01  _SB_REG   |    0000FF02  _SC_REG  
      0000FF04  _DIV_REG  |    0000FF05  _TIMA_REG |    0000FF06  _TMA_REG 
@@ -75,35 +75,42 @@ Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_CODE                  00000200    00005D8F =       23951. bytes (REL,CON)
+_CODE                  00000200    0000648C =       25740. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
-     000002B0  _init_spr |    00000302  _START_PO |    00000304  _END_X   
-     00000306  _END_Y    |    00000308  _update_v |    00000346  _draw_ent
-     000004AB  _update_e |    000005F9  _gs_set_p |    00000607  _gs_get_p
-     0000060B  _gs_get_m |    0000061B  _gs_updat |    0000066F  _gs_updat
-     0000076D  _gs_get_l |    0000078B  _gs_poll_ |    0000085D  _gs_get_e
-     0000093F  _joystick |    0000096D  _fn_updat |    00000A98  _fn_start
-     00000AD7  _fn_updat |    00000C22  _fn_updat |    00000C7A  _main    
-     00000ED2  _to_array |    00000EEC  _to_map_i |    00000F18  _snap_on_
-     00000F60  _transfor |    00000FDE  _tr_world |    0000103C  _tr_tile_
-     00001060  _tr_to_ma |    00001094  _clear_ti |    000010BD  _move_bkg
-     0000114D  _border_t |    00001262  _full_til |    00001374  _black_sq
-     00001384  _D01_Room |    00005384  _D01_Room |    00005744  _E01_Room
-     00005955  _E01_Room |    00005A05  _Font_pal |    00005A05  ___func_F
-     00005A0D  _Font_til |    00005CDD  _Font_map |    00005D11  _life_spr
-     00005D21  _solider_ |    00005DE1  _D01_Loca |    00005E19  _D01_Loca
-     00005E25  _D01_MAP_ |    00005E31  __divsuch |    00005E37  __modsuch
-     00005E40  __divusch |    00005E49  __modusch |    00005E55  __divscha
-     00005E5A  __modscha |    00005E61  __divsint |    00005E6A  __modsint
-     00005E76  __divucha |    00005E7B  __moducha |    00005E82  __divuint
-     00005E8B  __moduint |    00005E97  .div8     |    00005E97  .mod8    
-     00005E9F  .div16    |    00005E9F  .mod16    |    00005ED5  .divu8   
-     00005ED5  .modu8    |    00005ED8  .divu16   |    00005ED8  .modu16  
-     00005F18  __mulsuch |    00005F1B  __mulusch |    00005F24  __mulscha
-     00005F2C  __mulint  |    00005F4B  __mulucha |    00005F5D  ___memcpy
-     00005F5D  _memcpy  
+     000002C0  _init_spr |    00000312  _START_PO |    00000314  _END_X   
+     00000316  _END_Y    |    00000318  _update_v |    00000379  _draw_ent
+     000004C0  _hide_ent |    000004DE  _update_e |    0000063C  _gs_set_p
+     0000064A  _gs_toggl |    0000065A  _gs_get_p |    0000065E  _gs_get_m
+     0000066E  _gs_updat |    000006C2  _gs_updat |    000007C0  _gs_get_l
+     000007DE  _gs_poll_ |    000008B0  _gs_get_e |    000008E2  _await   
+     00000A1B  _is_down_ |    00000A29  _is_down  |    00000A36  _is_up   
+     00000A45  _is_press |    00000A5C  _joystick |    00000BF9  _gl_state
+     00000C26  _gl_state |    00000DE4  _gl_state |    00000F1D  _gl_updat
+     00000F75  _main     |    000011EF  _to_array |    00001209  _to_map_i
+     00001235  _snap_on_ |    0000127D  _transfor |    000012FB  _tr_world
+     00001359  _tr_tile_ |    0000137D  _tr_to_ma |    000013B1  _clear_ti
+     000013DA  _move_bkg |    0000146A  _border_t |    0000157F  _full_til
+     00001761  _ui_init  |    0000176F  _ui_draw  |    00001770  _ui_show_
+     00001784  _draw_cen |    000017F2  _ui_typew |    00001859  _play_dia
+     00001904  _black_sq |    00001914  _D01_Room |    00005914  _D01_Room
+     00005D94  _hello_wo |    00005D97  _hello_wo |    00005D9A  _hello_wo
+     00005DC9  _E01_Room |    00005FDA  _E01_Room |    0000608A  _Font_pal
+     0000608A  ___func_F |    00006092  _Font_til |    00006362  _Font_map
+     00006396  _life_spr |    000063A6  _solider_ |    00006476  _D01_Loca
+     000064AE  _D01_Loca |    000064BA  _D01_MAP_ |    000064C6  __divsuch
+     000064CC  __modsuch |    000064D5  __divusch |    000064DE  __modusch
+     000064EA  __divscha |    000064EF  __modscha |    000064F6  __divsint
+     000064FF  __modsint |    0000650B  __divucha |    00006510  __moducha
+     00006517  __divuint |    00006520  __moduint |    0000652C  .div8    
+     0000652C  .mod8     |    00006534  .div16    |    00006534  .mod16   
+     0000656A  .divu8    |    0000656A  .modu8    |    0000656D  .divu16  
+     0000656D  .modu16   |    000065AD  _set_vram |    000065B6  _set_win_
+     000065BF  _set_bkg_ |    000065EE  _get_win_ |    000065F6  _get_bkg_
+     00006615  __mulsuch |    00006618  __mulusch |    00006621  __mulscha
+     00006629  __mulint  |    00006648  __mulucha |    0000665A  ___memcpy
+     0000665A  _memcpy  
 ASxxxx Linker V03.00/V05.40 + sdld,  page 4.
 Hexadecimal  [32-Bits]
 
@@ -281,23 +288,24 @@ Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_HOME                  00005F8F    000001CA =         458. bytes (REL,CON)
+_HOME                  0000668C    000001DC =         476. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
-     00005F8F  .memset_s |    00005F98  .memcpy_s |    00005FB5  .display_
-     00005FB5  _display_ |    00005FCD  _set_tile |    00005FD2  _set_bkg_
-     00005FD2  _set_win_ |    00005FDA  _set_spri |    0000600A  _set_bkg_
-     0000604D  .set_xy_w |    00006056  .set_xy_b |    00006065  .set_xy_s
-     000060B1  _fill_bkg |    000060C3  .padup    |    000060C3  _waitpadu
-     000060D3  .jpad     |    000060D3  _joypad   |    000060FB  _waitpad 
-     000060FC  .wait_pad |    00006103  .fill_rec |    0000610C  .fill_rec
+     0000668C  .memset_s |    00006695  .memcpy_s |    000066B2  .display_
+     000066B2  _display_ |    000066CA  _fill_win |    000066DC  _set_tile
+     000066E1  _set_bkg_ |    000066E1  _set_win_ |    000066E9  _set_spri
+     00006719  .fill_rec |    00006722  .fill_rec |    0000676F  _set_bkg_
+     000067B2  .set_xy_w |    000067BB  .set_xy_b |    000067CA  .set_xy_s
+     00006816  _fill_bkg |    00006828  .padup    |    00006828  _waitpadu
+     00006838  .jpad     |    00006838  _joypad   |    00006860  _waitpad 
+     00006861  .wait_pad
 ASxxxx Linker V03.00/V05.40 + sdld,  page 23.
 Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_INITIALIZER           00006159    00000016 =          22. bytes (REL,CON)
+_INITIALIZER           00006868    00000016 =          22. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
@@ -306,17 +314,17 @@ Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_GSINIT                0000616F    0000000C =          12. bytes (REL,CON)
+_GSINIT                0000687E    0000000C =          12. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
-     0000616F  gsinit   
+     0000687E  gsinit   
 ASxxxx Linker V03.00/V05.40 + sdld,  page 25.
 Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_GSFINAL               0000617B    00000001 =           1. bytes (REL,CON)
+_GSFINAL               0000688A    00000001 =           1. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
@@ -325,23 +333,23 @@ Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_DATA                  0000C0A0    0000080E =        2062. bytes (REL,CON)
+_DATA                  0000C0A0    00000814 =        2068. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
      0000C0A0  __cpu     |    0000C0A1  __is_GBA  |    0000C0A2  .mode    
      0000C0A3  .sys_time |    0000C0A3  _sys_time |    0000C0A5  .int_0x40
-     0000C8AD  .image_ti
+     0000C8B3  .image_ti
 ASxxxx Linker V03.00/V05.40 + sdld,  page 27.
 Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_INITIALIZED           0000C8AE    00000016 =          22. bytes (REL,CON)
+_INITIALIZED           0000C8B4    00000016 =          22. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
-     0000C8AE  _GAME_STA |    0000C8C3  __submap_
+     0000C8B4  _GAME_STA |    0000C8C9  __submap_
 ASxxxx Linker V03.00/V05.40 + sdld,  page 28.
 Hexadecimal  [32-Bits]
 
@@ -357,50 +365,61 @@ _HRAM12                00000000    00000003 =           3. bytes (ABS,CON)
 Files Linked                              [ module(s) ]
 
 E:\Lab\GameBoyClassic\gbdk\lib/gb/crt0.o  [ Runtime ]
-C:\Users\julie\AppData\Local\Temp/lcc233160.o
+C:\Users\julie\AppData\Local\Temp/lcc188960.o
                                           [ entities ]
-C:\Users\julie\AppData\Local\Temp/lcc233161.o
+C:\Users\julie\AppData\Local\Temp/lcc188961.o
                                           [ game_state ]
-C:\Users\julie\AppData\Local\Temp/lcc233162.o
+C:\Users\julie\AppData\Local\Temp/lcc188962.o
+                                          [ helpers ]
+C:\Users\julie\AppData\Local\Temp/lcc188963.o
+                                          [ inputs ]
+C:\Users\julie\AppData\Local\Temp/lcc188964.o
                                           [ main ]
-C:\Users\julie\AppData\Local\Temp/lcc233163.o
+C:\Users\julie\AppData\Local\Temp/lcc188965.o
                                           [ map ]
-C:\Users\julie\AppData\Local\Temp/lcc233164.o
+C:\Users\julie\AppData\Local\Temp/lcc188966.o
                                           [ math ]
-C:\Users\julie\AppData\Local\Temp/lcc233165.o
+C:\Users\julie\AppData\Local\Temp/lcc188967.o
+                                          [ ui ]
+C:\Users\julie\AppData\Local\Temp/lcc188968.o
                                           [ black_square_sprite ]
-C:\Users\julie\AppData\Local\Temp/lcc233166.o
+C:\Users\julie\AppData\Local\Temp/lcc188969.o
                                           [ D01_Room_01_Map ]
-C:\Users\julie\AppData\Local\Temp/lcc233167.o
+C:\Users\julie\AppData\Local\Temp/lcc1889610.o
                                           [ D01_Room_01_Sprites ]
-C:\Users\julie\AppData\Local\Temp/lcc233168.o
+C:\Users\julie\AppData\Local\Temp/lcc1889611.o
+                                          [ dialogs ]
+C:\Users\julie\AppData\Local\Temp/lcc1889612.o
                                           [ E01_Room_Map ]
-C:\Users\julie\AppData\Local\Temp/lcc233169.o
+C:\Users\julie\AppData\Local\Temp/lcc1889613.o
                                           [ E01_Room_Sprites ]
-C:\Users\julie\AppData\Local\Temp/lcc2331610.o
+C:\Users\julie\AppData\Local\Temp/lcc1889614.o
                                           [ Font ]
-C:\Users\julie\AppData\Local\Temp/lcc2331611.o
+C:\Users\julie\AppData\Local\Temp/lcc1889615.o
                                           [ life_sprite ]
-C:\Users\julie\AppData\Local\Temp/lcc2331612.o
+C:\Users\julie\AppData\Local\Temp/lcc1889616.o
                                           [ solider ]
-C:\Users\julie\AppData\Local\Temp/lcc2331613.o
+C:\Users\julie\AppData\Local\Temp/lcc1889617.o
                                           [ maps_data ]
 
 
 Libraries Linked                          [ object file ]
 
+E:\Lab\GameBoyClassic\gbdk\lib/gb/gb.lib  [ fill_rect_wi.o ]
 E:\Lab\GameBoyClassic\gbdk\lib/sm83/sm83.lib
                                           [ div.o ]
 E:\Lab\GameBoyClassic\gbdk\lib/gb/gb.lib  [ sfr.o ]
+E:\Lab\GameBoyClassic\gbdk\lib/gb/gb.lib  [ set_data.o ]
+E:\Lab\GameBoyClassic\gbdk\lib/gb/gb.lib  [ set_tile.o ]
+E:\Lab\GameBoyClassic\gbdk\lib/gb/gb.lib  [ get_addr.o ]
 E:\Lab\GameBoyClassic\gbdk\lib/sm83/sm83.lib
                                           [ mul.o ]
-E:\Lab\GameBoyClassic\gbdk\lib/gb/gb.lib  [ set_data.o ]
+E:\Lab\GameBoyClassic\gbdk\lib/gb/gb.lib  [ fill_rect.o ]
 E:\Lab\GameBoyClassic\gbdk\lib/gb/gb.lib  [ set_tile_submap.o ]
 E:\Lab\GameBoyClassic\gbdk\lib/gb/gb.lib  [ fill_rect_bk.o ]
 E:\Lab\GameBoyClassic\gbdk\lib/gb/gb.lib  [ pad.o ]
 E:\Lab\GameBoyClassic\gbdk\lib/sm83/sm83.lib
                                           [ memcpy.o ]
-E:\Lab\GameBoyClassic\gbdk\lib/gb/gb.lib  [ fill_rect.o ]
 
 ASxxxx Linker V03.00/V05.40 + sdld,  page 30.
 

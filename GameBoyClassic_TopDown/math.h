@@ -6,6 +6,14 @@
 #define FP_SHIFT_VALUE (uint8_t)4 // 2^4 (16) sub values
 #define fp16_t uint16_t
 
+// Numbers definitions
+//
+#define u8 uint8_t
+#define u16 uint16_t
+
+#define i8 int8_t
+#define i16 int16_t
+
 typedef struct Vec2
 {
 	uint16_t x, y;
@@ -16,7 +24,8 @@ typedef struct FPVec2
 	fp16_t x, y;
 } FPVec2;
 
-typedef struct PixelCoords {
+typedef struct PixelCoords
+{
 	uint16_t x;
 	uint16_t y;
 } PixelCoords;
@@ -81,6 +90,22 @@ static inline fp16_t fp16_mod32(fp16_t a)
 static inline fp16_t fp16_mod128(fp16_t a)
 {
 	return a - (a >> 7) * 128;
+}
+
+/// @brief increments the value and prevents overflow
+static inline u8 increment(u8 value)
+{
+	return value == 255 ? value : value + 1;
+}
+
+static inline u8 div_2(u8 value)
+{
+	return (value >> 1);
+}
+
+static inline u8 mod_2(u8 value)
+{
+	return (value - (value >> 1) * 2);
 }
 
 #endif

@@ -10,40 +10,10 @@
 #include "res/D01_Room_01_Map.h"
 #include "res/Descriptors/maps_data.h"
 #include "game_state.h"
-
-typedef struct PlayerInputs
-{
-	int8_t x_direction;
-	int8_t y_direction;
-	uint8_t state;
-} PlayerInputs;
-
-void joystick_poll(PlayerInputs *input)
-{
-	input->x_direction = 0;
-	input->y_direction = 0;
-
-	uint8_t input_state = joypad();
-	input->state = input_state;
-
-	if ((input_state & J_RIGHT) != 0)
-	{
-		input->x_direction = 1;
-	}
-	else if ((input_state & J_LEFT) != 0)
-	{
-		input->x_direction = -1;
-	}
-
-	if ((input_state & J_UP) != 0)
-	{
-		input->y_direction = -1;
-	}
-	else if ((input_state & J_DOWN) != 0)
-	{
-		input->y_direction = 1;
-	}
-}
+#include "helpers.h"
+#include "ui.h"
+#include "inputs.h"
+#include "res/dialogs.h"
 
 // Entities ================
 //
@@ -54,15 +24,61 @@ static fp16_t player_velocity = 16;
 // Locations ===============
 //
 static Vec2 player_pos = {.x = 0, .y = 0};
-static MapDescriptor *des = NULL;
+static MapDescriptor *map_desc = NULL;
 static MapCoords grid_coords = {.x = 0, .y = 0};
 static PixelCoords cam_coords = {.x = 0, .y = 0};
 
-// Game Systems ===========
+// Game Loop Systems ===========
 //
-void fn_update_playing(void)
+
+// TODO(JUH): this doesn't work nice for now, it needs an implementation of get_key_down !!
+void gl_state_paused(void)
 {
-	joystick_poll(&inputs);
+	SHOW_WIN;
+	HIDE_SPRITES;
+
+	ui_show_pause();
+
+	if (is_down_this_frame(&inputs, J_START))
+	{
+		gs_set_player_state(PLAYING, FALSE);
+		SHOW_SPRITES;
+		HIDE_WIN;
+		return;
+	}
+}
+
+void gl_state_playing(void)
+{
+	if (is_down_this_frame(&inputs, J_START))
+	{
+		gs_set_player_state(PAUSED, FALSE);
+		return;
+	}
+
+	// TODO(JuH) this is for the example and need to be removed
+	//
+	if (is_down(&inputs, J_A))
+	{
+		player_velocity = 40;
+	}
+	else
+	{
+		player_velocity = 16;
+	}
+
+	if (is_down_this_frame(&inputs, J_B))
+	{
+		player_pos.x += 400 * (int16_t)inputs.x_direction;
+		player_pos.y += 400 * (int16_t)inputs.y_direction;
+	}
+
+	if (is_pressed(&inputs, TWO_SECS, J_SELECT_IDX))
+	{
+		play_dialog_sequence(&hello_world_sequence);
+	}
+
+	// End of example
 
 	player_pos.x += player_velocity * inputs.x_direction;
 	player_pos.y += player_velocity * inputs.y_direction;
@@ -75,53 +91,12 @@ void fn_update_playing(void)
 
 	if (grid_pos.x != grid_coords.x || grid_pos.y != grid_coords.y)
 	{
-		border_tilemap_draw(grid_coords, grid_pos, des);
+		border_tilemap_draw(grid_coords, grid_pos, map_desc);
 		grid_coords = grid_pos;
 	}
 }
 
-typedef BOOLEAN (*coroutine_action)(void);
-
-// TODO(JUH): move this to an game_loop file
-union AwaiterValues
-{
-	uint8_t timer_8;
-	uint16_t timer_16;
-};
-typedef enum AwaiterType
-{
-	BIT_8,
-	BIT_16,
-} AwaiterType;
-typedef struct AwaiterParams
-{
-	AwaiterType type;
-	union AwaiterValues value;
-} AwaiterParams;
-
-void fn_start_awaiter(AwaiterParams params)
-{
-	BOOLEAN continue_coroutine = TRUE;
-
-	while (continue_coroutine)
-	{
-		vsync();
-
-		switch (params.type)
-		{
-		case BIT_8:
-			params.value.timer_8 -= 1;
-			continue_coroutine = params.value.timer_8 > 0;
-			break;
-		case BIT_16:
-			params.value.timer_16 -= 1;
-			continue_coroutine = params.value.timer_16 > 0;
-			break;
-		}
-	}
-}
-
-void fn_update_transition(void)
+void gl_state_transition(void)
 {
 	if (GAME_STATE.controllerState != LOCATION_TRANSITION)
 	{
@@ -145,24 +120,21 @@ void fn_update_transition(void)
 	cam_coords.x = player_pos.x;
 	cam_coords.y = player_pos.y;
 
-	// NOTE(JUH): hide player entity while loading next location (next -> all entities + special function to handle it)
-	entities.px[0] = 0;
-	entities.py[0] = 0;
-	draw_entities(&entities);
+	// NOTE(JUH): move the sprites to 0x, 0y coordinates - out of the screen for gameboy specs
+	hide_entities(&entities);
 
-	// NOTE(JUH): this is the first version of super naive awaiter 
 	fill_bkg_rect(prev_coords.x, prev_coords.y, MAP_VIEW_COLS, MAP_VIEW_ROWS, 255);
 	AwaiterParams awaiter_param = {
-		.type = BIT_8,
+		.type = U8,
 		.value.timer_8 = 40, // 0.66seconds
 	};
-	fn_start_awaiter(awaiter_param);
+	await(awaiter_param);
 
-	full_tilemap_draw(grid_coords, des);
+	full_tilemap_draw(grid_coords, map_desc);
 	gs_set_player_state(PLAYING, TRUE);
 }
 
-void fn_update_backround(void)
+void gl_update_background(void)
 {
 	// player position is in subpixels coordinates, so we need to shift them to normal pixel coordinates
 	cam_coords.x = fp16_to_whole16(player_pos.x);
@@ -178,9 +150,9 @@ int main(void)
 	SHOW_SPRITES;
 	SHOW_BKG;
 
-	entities.tile_ids[0] = 0; // sprite id 0
-	entities.tile_ids[1] = 1; // sprite id 1
-	entities.count = 3;
+	entities.tile_ids[0] = ETT_PLAYER; // sprite id 0
+	entities.tile_ids[1] = ETT_GOBLIN; // sprite id 1
+	entities.count = 2;
 
 	set_sprite_data(0, 1, life_sprite);
 	set_sprite_data(1, 1, solider_sprite);
@@ -198,9 +170,11 @@ int main(void)
 
 	// Initialize =========
 	//
+	ui_init();
+
 	gs_update_map(D01);
-	des = gs_get_map_descriptor(GAME_STATE.map);
-	MapCoords start = {.x = des->spawn_pos.x, .y = des->spawn_pos.y};
+	map_desc = gs_get_map_descriptor(GAME_STATE.map);
+	MapCoords start = {.x = map_desc->spawn_pos.x, .y = map_desc->spawn_pos.y};
 
 	player_pos.x = new_fp16(start.x * 8);
 	player_pos.y = new_fp16(start.y * 8);
@@ -209,21 +183,25 @@ int main(void)
 	grid_coords.y = start.y;
 	cam_coords.x = player_pos.x;
 	cam_coords.y = player_pos.y;
-	full_tilemap_draw(grid_coords, des);
+	full_tilemap_draw(grid_coords, map_desc);
 	cam_coords = move_bkg_with_coords(cam_coords);
 
 	while (1)
 	{
+		joystick_poll(&inputs);
+
 		switch (GAME_STATE.controllerState)
 		{
 		case PLAYING:
-			fn_update_playing();
+			gl_state_playing();
 			vsync();
 			break;
 		case LOCATION_TRANSITION:
-			fn_update_transition();
+			gl_state_transition();
 			break;
 		case PAUSED:
+			gl_state_paused();
+			vsync();
 			break;
 		}
 
@@ -235,6 +213,7 @@ int main(void)
 			gs_update_location(exit_index);
 		}
 
-		fn_update_backround();
+		gl_update_background();
+		ui_draw();
 	}
 }

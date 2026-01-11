@@ -24,10 +24,10 @@ void ui_draw(void)
 void ui_show_pause(void)
 {
     const char *pause_text = "game paused";
-    draw_centered_text(pause_text, 11);
+    ui_draw_centered_text(pause_text, 11);
 }
 
-void draw_centered_text(const char *text, u8 len)
+void ui_draw_centered_text(const char *text, u8 len)
 {
     u8 col = 0;
     u8 row = 0;
@@ -62,7 +62,7 @@ void draw_centered_text(const char *text, u8 len)
     }
 }
 
-void ui_typewritter_draw(String *text, u8 start)
+void ui_draw_typewitter(String *text, u8 start)
 {
     SHOW_WIN;
 
@@ -79,11 +79,8 @@ void ui_typewritter_draw(String *text, u8 start)
         u16 offset = UI_FONT_VRAM_OFFSET + c + 1;
         set_vram_byte(addr, offset);
 
-        vsync();
-        vsync();
-        vsync();
-        vsync();
-        vsync();
+        // NOTE(JuH) this will run vsync 4 times
+        CALL_4(vsync)
     }
 }
 
@@ -94,7 +91,7 @@ void play_dialog_sequence(const DialogSequence *seq)
     for (u8 i = 0; i < 5; i++)
     {
         SequenceAction action = seq->actions[i];
-        String *text = seq->texts[i];
+        const String *text = seq->texts[i];
         u8 start = WIN_ROWS_HALF - div_2(text->len);
 
         if (mod_2(text->len) == 0)
@@ -107,7 +104,7 @@ void play_dialog_sequence(const DialogSequence *seq)
             break;
         }
 
-        ui_typewritter_draw(text, start);
+        ui_draw_typewitter(text, start);
         WAIT_ONE_SECOND();
         fill_win_rect(0, 0, 31, 31, UI_FONT_VRAM_OFFSET);
     }

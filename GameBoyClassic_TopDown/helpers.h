@@ -12,20 +12,33 @@ typedef BOOLEAN (*awaiter_action)(void);
 #define u8 uint8_t
 #define u16 uint16_t
 
-/// DEFINES VALUES 
+/// DEFINES VALUES
 /// ==============
 #define ONE_SECS (u8)60
 #define TWO_SECS (u8)120
 
-/// DEFINES ACTIONS 
+/// DEFINES ACTIONS
 /// ==============
 #define WAIT_ONE_SECOND()                                                \
 	AwaiterParams params = {.type = U8, .value = {.timer_8 = ONE_SECS}}; \
 	await(params);
 
-#define WAIT_N_SECOND(n)                                                \
+#define WAIT_N_SECOND(n)                                                            \
 	AwaiterParams params = {.type = U16, .value = {.timer_16 = (u16)n * ONE_SECS}}; \
 	await(params);
+
+#define CALL_2(f) \
+	f();          \
+	f();
+#define CALL_3(f) \
+	f();          \
+	f();          \
+	f();
+#define CALL_4(f) \
+	f();          \
+	f();          \
+	f();          \
+	f();
 
 /// AWAITERS
 /// ==============

@@ -75,7 +75,7 @@ void gl_state_playing(void)
 
 	if (is_pressed(&inputs, TWO_SECS, J_SELECT_IDX))
 	{
-		play_dialog_sequence(&hello_world_sequence);
+		ui_play_dialog_sequence(&hello_world_sequence);
 	}
 
 	// End of example

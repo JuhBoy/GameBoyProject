@@ -4,17 +4,25 @@
 #include "ui.h"
 #include "res/Font.h"
 #include "helpers.h"
+#include "res/ui_dialog_borders.h"
 #include <gb/gb.h>
 
-#define UI_FONT_VRAM_OFFSET 128
+// SIZES
+//
 #define WIN_ROWS (uint8_t)18
 #define WIN_COLS (uint8_t)20
 #define WIN_ROWS_HALF (uint8_t)9
 #define WIN_COLS_HALF (uint8_t)10
+#define DIALOG_WIN_VERT_OFFSET_PX (uint8_t)112
+#define DIALOG_WIN_VERT_OFFSET_TILES (uint8_t)14
+
+#define TEXT_WIDTH_LIMIT 18
+#define TEXT_HEIGHT_LIMIT 2
 
 void ui_init(void)
 {
     set_win_data(UI_FONT_VRAM_OFFSET, Font_TILE_COUNT, Font_tiles);
+    set_win_data(UI_BORDERS_VRAM_OFFSET, ui_dialog_sprites_count, ui_dialog_borders);
 }
 
 void ui_draw(void)
@@ -24,90 +32,125 @@ void ui_draw(void)
 void ui_show_pause(void)
 {
     const char *pause_text = "game paused";
-    ui_draw_centered_text(pause_text, 11);
+    ui_draw_fullscreen(pause_text, 11);
 }
 
-void ui_draw_centered_text(const char *text, u8 len)
+void ui_draw_fullscreen(const char *text, u8 len)
 {
-    u8 col = 0;
-    u8 row = 0;
-    u8 stride_p = 0;
-    const u8 stride = 12;
+    const u8 text_break_col = 12;
 
-    u8 i = 0;
-    char c = text[i++];
+    u8 col = 0, row = 0, text_id = 0;
+    char c = text[text_id++];
+
+    u8 pixel_offset = mod_2(len) != 0 ? 3 : 7;
+    move_win(pixel_offset, 0);
 
     while (c != '\0')
     {
-        u8 curr = c - 'a' + 1;
+        u8 letter = get_vram_char(c);
+        u8ptr addr = get_win_xy_addr(WIN_COLS_HALF - div_2(len) + col, WIN_ROWS_HALF - 1 + row);
+        set_vram_byte(addr, letter);
 
-        if (c == ' ')
-        {
-            curr = 0;
-        }
-
-        curr += UI_FONT_VRAM_OFFSET;
-        u8 *addr = get_win_xy_addr(WIN_ROWS_HALF - (len >> 1) + col, WIN_ROWS_HALF - 1 + row);
-        set_vram_byte(addr, curr);
-
-        c = text[i++];
+        c = text[text_id++];
         col++;
 
-        if (++stride_p >= stride)
+        if (col >= text_break_col)
         {
             row += 1;
             col = 0;
-            stride_p = 0;
         }
     }
 }
 
-void ui_draw_typewitter(String *text, u8 start)
+/// @brief draw a maximum of 2 lines inside the dialog box.
+void ui_draw_typewitter(const String *text, u8 start)
 {
     SHOW_WIN;
 
-    move_win(0, WIN_ROWS * 8 - 24);
+    u8 text_id = 0;
+    u8 col_id = 0;
+    u8 line = 1;
+    u8 vram_c = 'a';
 
-    u8 index = 0;
-    char c = 'a';
-
-    while (index < text->len)
+    while (text_id < text->len)
     {
-        c = text->str[index++] - 'a';
+        char text_c = text->str[text_id++];
+        vram_c = get_vram_char(text_c);
 
-        u8 *addr = get_win_xy_addr(start + index, 1);
-        u16 offset = UI_FONT_VRAM_OFFSET + c + 1;
-        set_vram_byte(addr, offset);
+        if (text_c == '\n')
+        {
+            line = 2;
+            col_id = 0;
+            continue;
+        }
+
+        col_id++;
+
+        u8 *addr = get_win_xy_addr(start + col_id, line);
+        set_vram_byte(addr, vram_c);
 
         // NOTE(JuH) this will run vsync 4 times
         CALL_4(vsync)
     }
 }
 
-void play_dialog_sequence(const DialogSequence *seq)
+void ui_draw_dialog_borders(void)
+{
+    u8ptr corner_left = get_win_xy_addr(0, 0);
+    u8ptr corner_right = get_win_xy_addr(19, 0);
+    u8ptr corner_b_left = get_win_xy_addr(0, 3);
+    u8ptr corner_b_right = get_win_xy_addr(19, 3);
+
+    // NOTE(JuH) this is a layout in vram - it should not change
+    set_vram_byte(corner_left, UI_BORDERS_VRAM_OFFSET);
+    set_vram_byte(corner_right, UI_BORDERS_VRAM_OFFSET + (u8)2);
+    set_vram_byte(corner_b_left, UI_BORDERS_VRAM_OFFSET + (u8)6);
+    set_vram_byte(corner_b_right, UI_BORDERS_VRAM_OFFSET + (u8)4);
+
+    for (u8 i = 1; i < 3; i++)
+    {
+        u8ptr col_l = get_win_xy_addr(0, i);
+        u8ptr col_r = get_win_xy_addr(19, i);
+
+        set_vram_byte(col_l, 180);
+        set_vram_byte(col_r, 176);
+    }
+
+    for (u8 i = 1; i < 19; ++i)
+    {
+        u8ptr line_up = get_win_xy_addr(i, 0);
+        u8ptr line_bot = get_win_xy_addr(i, 3);
+
+        set_vram_byte(line_up, 174);
+        set_vram_byte(line_bot, 178);
+    }
+}
+
+void ui_play_dialog_sequence(const DialogSequence *seq)
 {
     SHOW_WIN;
+
+    // NOTE(JuH) 7 is the number of pixels hidden by default by the win layer (IDK why yet...)
+    move_win(7, DIALOG_WIN_VERT_OFFSET_PX);
+    ui_draw_dialog_borders();
 
     for (u8 i = 0; i < 5; i++)
     {
         SequenceAction action = seq->actions[i];
         const String *text = seq->texts[i];
-        u8 start = WIN_ROWS_HALF - div_2(text->len);
-
-        if (mod_2(text->len) == 0)
-        {
-            start += 1;
-        }
 
         if (action == SEQ_NONE)
         {
             break;
         }
 
-        ui_draw_typewitter(text, start);
+        ui_draw_typewitter(text, 0);
         WAIT_ONE_SECOND();
-        fill_win_rect(0, 0, 31, 31, UI_FONT_VRAM_OFFSET);
+        fill_win_rect(1, 1, 18, 2, UI_FONT_VRAM_OFFSET);
     }
+
+    fill_win_rect(0, 0, 20, 4, UI_FONT_VRAM_OFFSET);
+    move_win(0, 0);
 
     HIDE_WIN;
 }

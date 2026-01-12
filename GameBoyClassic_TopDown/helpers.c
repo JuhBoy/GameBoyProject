@@ -22,3 +22,24 @@ void await(AwaiterParams params)
         }
     }
 }
+
+u8 get_vram_char(char c)
+{
+    const char lookup_table[7] = {' ', '!', ':', '?', '\\', '=', '.'};
+    const u8 vram_addr[] = {128, 165, 166, 167, 168, 169, 171};
+
+    if (c >= 'a' && c <= 'z')
+    {
+        return UI_FONT_VRAM_OFFSET + c - 'a' + 1; // NOTE(JuH) +1 stands for the blank character at the begining of the font
+    }
+
+    for (u8 i = 0; i < 7; i++)
+    {
+        if (c == lookup_table[i])
+        {
+            return vram_addr[i];
+        }
+    }
+
+    return vram_addr[0];
+}

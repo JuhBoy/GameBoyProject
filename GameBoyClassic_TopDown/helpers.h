@@ -11,6 +11,8 @@ typedef BOOLEAN (*awaiter_action)(void);
 /// ==============
 #define u8 uint8_t
 #define u16 uint16_t
+#define u8ptr uint8_t*
+#define u16ptr uint8_t*
 
 /// DEFINES VALUES
 /// ==============
@@ -40,6 +42,11 @@ typedef BOOLEAN (*awaiter_action)(void);
 	f();          \
 	f();
 
+// VRAM VALUES
+//
+#define UI_FONT_VRAM_OFFSET (u8)128
+#define UI_BORDERS_VRAM_OFFSET (u8)173
+
 /// AWAITERS
 /// ==============
 union AwaiterValues
@@ -61,5 +68,8 @@ typedef struct AwaiterParams
 } AwaiterParams;
 
 void await(AwaiterParams params);
+
+// TEXTS
+u8 get_vram_char(char c);
 
 #endif

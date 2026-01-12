@@ -108,4 +108,14 @@ static inline u8 mod_2(u8 value)
 	return (value - (value >> 1) * 2);
 }
 
+static inline u8 min(u8 a, u8 b)
+{
+	return a < b ? a : b;
+}
+
+static inline u8 max(u8 a, u8 b)
+{
+	return a > b ? a : b;
+}
+
 #endif

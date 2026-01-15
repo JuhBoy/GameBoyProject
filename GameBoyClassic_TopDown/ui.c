@@ -19,6 +19,11 @@
 #define TEXT_WIDTH_LIMIT 18
 #define TEXT_HEIGHT_LIMIT 2
 
+#define VRAM_DBOX_COL_L_IDX 180
+#define VRAM_DBOX_COL_R_IDX 176
+#define VRAM_DBOX_TOP_IDX 174
+#define VRAM_DBOX_BOT_IDX 178
+
 void ui_init(void)
 {
     set_win_data(UI_FONT_VRAM_OFFSET, Font_TILE_COUNT, Font_tiles);
@@ -112,8 +117,8 @@ void ui_draw_dialog_borders(void)
         u8ptr col_l = get_win_xy_addr(0, i);
         u8ptr col_r = get_win_xy_addr(19, i);
 
-        set_vram_byte(col_l, 180);
-        set_vram_byte(col_r, 176);
+        set_vram_byte(col_l, VRAM_DBOX_COL_L_IDX);
+        set_vram_byte(col_r, VRAM_DBOX_COL_R_IDX);
     }
 
     for (u8 i = 1; i < 19; ++i)
@@ -121,8 +126,8 @@ void ui_draw_dialog_borders(void)
         u8ptr line_up = get_win_xy_addr(i, 0);
         u8ptr line_bot = get_win_xy_addr(i, 3);
 
-        set_vram_byte(line_up, 174);
-        set_vram_byte(line_bot, 178);
+        set_vram_byte(line_up, VRAM_DBOX_TOP_IDX);
+        set_vram_byte(line_bot, VRAM_DBOX_BOT_IDX);
     }
 }
 
@@ -130,7 +135,7 @@ void ui_play_dialog_sequence(const DialogSequence *seq)
 {
     SHOW_WIN;
 
-    // NOTE(JuH) 7 is the number of pixels hidden by default by the win layer (IDK why yet...)
+    // NOTE(JuH) 7 is the number of pixels hidden by default by the win layer (IDK why yet 7 exactly...)
     move_win(7, DIALOG_WIN_VERT_OFFSET_PX);
     ui_draw_dialog_borders();
 

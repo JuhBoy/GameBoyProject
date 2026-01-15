@@ -40,8 +40,6 @@ void joystick_poll(PlayerInputs *input)
     input->state_down = (frame_state) & (~previous_state);
     input->state_up = (~frame_state) & previous_state;
 
-    // TODO(JUH) this doesn't work yet .. /!\/!\/!\/!\/!
-    ///!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!
     update_pressed_duration(input, frame_state, previous_state, J_START_IDX);
     update_pressed_duration(input, frame_state, previous_state, J_SELECT_IDX);
     update_pressed_duration(input, frame_state, previous_state, J_A_IDX);

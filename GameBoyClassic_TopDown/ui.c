@@ -24,6 +24,12 @@
 #define VRAM_DBOX_TOP_IDX 174
 #define VRAM_DBOX_BOT_IDX 178
 
+UIState UI_STATE = {
+    .state = UI_NONE,
+    .dial_seq_idx = 0,
+    .seq = NULL,
+};
+
 void ui_init(void)
 {
     set_win_data(UI_FONT_VRAM_OFFSET, Font_TILE_COUNT, Font_tiles);
@@ -131,7 +137,55 @@ void ui_draw_dialog_borders(void)
     }
 }
 
-void ui_play_dialog_sequence(const DialogSequence *seq)
+void ui_dialog_step(void)
+{
+    if (!ui_running_seq())
+    {
+        return;
+    }
+
+    const DialogSequence *seq = UI_STATE.seq;
+
+    for (u8 i = UI_STATE.dial_seq_idx; i < DSEQ_MAX_COUNT; i++)
+    {
+        fill_win_rect(1, 1, 18, 2, UI_FONT_VRAM_OFFSET);
+
+        SequenceAction action = seq->actions[i];
+        const String *text = seq->texts[i];
+
+        if (action == SEQ_NONE)
+        {
+            UI_STATE.state = UI_NONE;
+            break;
+        }
+
+        ui_draw_typewitter(text, 0);
+
+        if (action == SEQ_USER_INPUT)
+        {
+            UI_STATE.dial_seq_idx = i + 1;
+            UI_STATE.state |= UI_WAIT_USER_INPUT;
+            return;
+        }
+        else
+        {
+            UI_STATE.state &= ~UI_WAIT_USER_INPUT;
+        }
+
+        if (action == SEQ_TIMER)
+        {
+            UI_STATE.dial_seq_idx = i + 1;
+            UI_STATE.state |= UI_WAIT_TIMER;
+            return;
+        }
+        else
+        {
+            UI_STATE.state &= ~UI_WAIT_TIMER;
+        }
+    }
+}
+
+void ui_start_dialog_seq(const DialogSequence *seq)
 {
     SHOW_WIN;
 
@@ -139,23 +193,38 @@ void ui_play_dialog_sequence(const DialogSequence *seq)
     move_win(7, DIALOG_WIN_VERT_OFFSET_PX);
     ui_draw_dialog_borders();
 
-    for (u8 i = 0; i < 5; i++)
-    {
-        SequenceAction action = seq->actions[i];
-        const String *text = seq->texts[i];
+    UI_STATE.state = UI_RUNNING_SEQ;
+    UI_STATE.dial_seq_idx = 0;
+    UI_STATE.seq = seq;
+}
 
-        if (action == SEQ_NONE)
-        {
-            break;
-        }
-
-        ui_draw_typewitter(text, 0);
-        WAIT_ONE_SECOND();
-        fill_win_rect(1, 1, 18, 2, UI_FONT_VRAM_OFFSET);
-    }
-
+void ui_end_dialog_seq(void)
+{
     fill_win_rect(0, 0, 20, 4, UI_FONT_VRAM_OFFSET);
     move_win(0, 0);
+    ui_reset_state();
 
     HIDE_WIN;
+}
+
+BOOLEAN ui_wait_user_input(void)
+{
+    return (UI_STATE.state & UI_WAIT_USER_INPUT) != 0;
+}
+
+BOOLEAN ui_wait_timer(void)
+{
+    return (UI_STATE.state & UI_WAIT_TIMER) != 0;
+}
+
+BOOLEAN ui_running_seq(void)
+{
+    return (UI_STATE.state & UI_RUNNING_SEQ) != 0;
+}
+
+void ui_reset_state(void)
+{
+    UI_STATE.dial_seq_idx = 0;
+    UI_STATE.state = UI_NONE;
+    UI_STATE.seq = NULL;
 }

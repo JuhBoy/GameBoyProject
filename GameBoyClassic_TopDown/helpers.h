@@ -1,18 +1,28 @@
 #ifndef __HELPERS__
 #define __HELPERS__
 
+#include "inputs.h"
 #include <gb/gb.h>
 
 /// CALLBACKS
 /// ==============
-typedef BOOLEAN (*awaiter_action)(void);
+typedef BOOLEAN (*input_fn)(PlayerInputs *data);
+
+typedef struct
+{
+	input_fn action;
+	PlayerInputs *data;
+} InputCB;
+
+#define RUN_CB(cb) \
+	(cb)->action((cb)->data)
 
 /// DEFINES TYPES
 /// ==============
 #define u8 uint8_t
 #define u16 uint16_t
-#define u8ptr uint8_t*
-#define u16ptr uint8_t*
+#define u8ptr uint8_t *
+#define u16ptr uint8_t *
 
 /// DEFINES VALUES
 /// ==============

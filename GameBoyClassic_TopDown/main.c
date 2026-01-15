@@ -75,7 +75,11 @@ void gl_state_playing(void)
 
 	if (is_pressed(&inputs, TWO_SECS, J_SELECT_IDX))
 	{
-		ui_play_dialog_sequence(&hello_world_sequence);
+		const DialogSequence *example_seq = &hello_world_sequence;
+		ui_start_dialog_seq(example_seq);
+
+		gs_set_player_state(DIALOGUE, FALSE);
+		return;
 	}
 
 	// End of example
@@ -132,6 +136,33 @@ void gl_state_transition(void)
 
 	full_tilemap_draw(grid_coords, map_desc);
 	gs_set_player_state(PLAYING, TRUE);
+}
+
+void gl_state_dialogue(void)
+{
+	if (ui_wait_user_input() && !is_down_this_frame(&inputs, J_A))
+	{
+		return;
+	}
+
+	// NOTE(JuH): this is thread blocking for one sec, maybe remove it if I ever implements sounds
+	if (ui_wait_timer())
+	{
+		WAIT_ONE_SECOND();
+	}
+
+	if (ui_running_seq())
+	{
+		ui_dialog_step();
+	}
+
+	if (UI_STATE.state == UI_NONE)
+	{
+		ui_end_dialog_seq();
+		gs_set_player_state(PLAYING, FALSE);
+	}
+
+	vsync();
 }
 
 void gl_update_background(void)
@@ -202,6 +233,9 @@ int main(void)
 		case PAUSED:
 			gl_state_paused();
 			vsync();
+			break;
+		case DIALOGUE:
+			gl_state_dialogue();
 			break;
 		}
 

@@ -3,6 +3,8 @@
 
 #include "../math.h"
 
+#define DSEQ_MAX_COUNT 5
+
 typedef struct String
 {
     const char *str;
@@ -18,8 +20,8 @@ typedef enum SequenceAction
 
 typedef struct DialogSequence
 {
-    String* texts[5];
-    SequenceAction actions[5];
+    String* texts[DSEQ_MAX_COUNT];
+    SequenceAction actions[DSEQ_MAX_COUNT];
 } DialogSequence;
 
 /// Hello World Sequence for testing

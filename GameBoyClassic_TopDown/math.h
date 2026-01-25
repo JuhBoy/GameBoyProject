@@ -2,8 +2,9 @@
 #define __MATH_INCLUDE
 
 #include <stdint.h>
+#include "res/gen_sine_lut.h"
 
-#define FP_SHIFT_VALUE (uint8_t)4 // 2^4 (16) sub values
+#define FP_SHIFT_VALUE (uint16_t)4 // 2^4 (16) sub values
 #define fp16_t uint16_t
 
 // Numbers definitions
@@ -18,6 +19,10 @@ typedef struct Vec2
 {
 	uint16_t x, y;
 } Vec2;
+
+typedef struct iVec2 { 
+	int16_t x, y;
+} iVec2;
 
 typedef struct FPVec2
 {
@@ -72,6 +77,11 @@ static inline fp16_t fp16_mul8(fp16_t a)
 	return a << 3;
 }
 
+static inline fp16_t fp16_div2(fp16_t a)
+{
+	return (a >> 1);
+}
+
 static inline fp16_t fp16_div4(fp16_t a)
 {
 	return a >> 2;
@@ -117,5 +127,15 @@ static inline u8 max(u8 a, u8 b)
 {
 	return a > b ? a : b;
 }
+
+static inline i8 abs(i8 a)
+{
+	i8 shift = a >> 7;
+	return (a ^ shift) - shift;
+}
+
+i8 sin(u8 a);
+i8 cos(u8 a);
+iVec2 rotate(iVec2 p, u8 a, u8 speed);
 
 #endif

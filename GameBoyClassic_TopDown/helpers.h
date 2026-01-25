@@ -28,6 +28,8 @@ typedef struct
 /// ==============
 #define ONE_SECS (u8)60
 #define TWO_SECS (u8)120
+#define MIDDLE_SCREEN_PXL_HOR (i8)80
+#define MIDDLE_SCREEN_PXL_VER (i8)72
 
 /// DEFINES ACTIONS
 /// ==============

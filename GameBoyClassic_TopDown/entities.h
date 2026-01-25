@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <gb/gb.h>
-#include "math.c"
+#include "math.h"
 #include "helpers.h"
 
 typedef enum EntityId {

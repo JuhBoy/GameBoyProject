@@ -15,11 +15,14 @@
 #include "inputs.h"
 #include "res/dialogs.h"
 
+#define HERO_DEFAULT_SPEED 16
+#define HERO_HALF_SPEED 11
+
 // Entities ================
 //
 static PlayerInputs inputs;
 static EntitiesBank entities;
-static fp16_t player_velocity = 16;
+static fp16_t player_velocity = HERO_DEFAULT_SPEED;
 
 // Locations ===============
 //
@@ -64,7 +67,7 @@ void gl_state_playing(void)
 	}
 	else
 	{
-		player_velocity = 16;
+		player_velocity = HERO_DEFAULT_SPEED;
 	}
 
 	if (is_down_this_frame(&inputs, J_B))
@@ -82,14 +85,19 @@ void gl_state_playing(void)
 		return;
 	}
 
-	// End of example
+	if (abs(inputs.x_direction) == 1 && abs(inputs.y_direction) == 1)
+	{
+		player_velocity = HERO_HALF_SPEED;
+	}
+	u16 new_x = player_pos.x + player_velocity * (u16)inputs.x_direction;
+	u16 new_y = player_pos.y + player_velocity * (u16)inputs.y_direction;
+	MapCoords grid_pos = snap_on_grid(fp16_to_whole16(new_x), fp16_to_whole16(new_y));
 
-	player_pos.x += player_velocity * inputs.x_direction;
-	player_pos.y += player_velocity * inputs.y_direction;
-	MapCoords grid_pos = snap_on_grid(fp16_to_whole16(player_pos.x), fp16_to_whole16(player_pos.y));
+	entities.px[0] = player_pos.x + new_fp16(8) - new_fp16(cam_coords.x);
+	entities.py[0] = player_pos.y + new_fp16(16) - new_fp16(cam_coords.y);
 
-	entities.px[0] = player_pos.x + new_fp16(8) - (cam_coords.x << 4);
-	entities.py[0] = player_pos.y + new_fp16(16) - (cam_coords.y << 4);
+	player_pos.x = new_x;
+	player_pos.y = new_y;
 
 	draw_entities(&entities);
 
@@ -220,6 +228,23 @@ int main(void)
 	while (1)
 	{
 		joystick_poll(&inputs);
+
+		// TODO: TO REMOVE, this is for the exemple
+		{
+			static u8 angle = 0;
+
+			iVec2 v = {.x = 1, .y = 0};
+			iVec2 vr = rotate(v, angle, 2);
+
+			// -128 - 127
+			// remap 16px range
+			vr.x = vr.x >> 2;
+			vr.y = vr.y >> 2;
+
+			entities.px[1] = new_fp16(MIDDLE_SCREEN_PXL_HOR + vr.x);
+			entities.py[1] = new_fp16(MIDDLE_SCREEN_PXL_VER + 8 + vr.y);
+			angle += 1;
+		}
 
 		switch (GAME_STATE.controllerState)
 		{

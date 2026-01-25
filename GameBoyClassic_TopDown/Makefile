@@ -1,9 +1,3 @@
-#
-# Simple Makefile that compiles all .c and .s files in the same folder
-#
-
-# If you move this project you can change the directory 
-# to match your GBDK root directory (ex: GBDK_HOME = "C:/GBDK/"
 ifndef GBDK_HOME
 	GBDK_HOME = ../gbdk/
 endif

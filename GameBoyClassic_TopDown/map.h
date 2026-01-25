@@ -3,7 +3,7 @@
 
 #include "gb/gb.h"
 #include <stdint.h>
-#include "math.c"
+#include "math.h"
 
 #define MAP_VIEW_ROWS (uint16_t)20			// 2 columns wider than screen view
 #define MAP_VIEW_COLS (uint16_t)22			// 2 columns wider than screen view

@@ -121,7 +121,7 @@ void border_tilemap_draw(MapCoords previous, MapCoords next, MapDescriptor *map)
 		}
 		else
 		{
-			int16_t y = ((int16_t)next.y) - 1;
+			int16_t y = next.y - 1;
 			set_bkg_submap(next.x, next.y - 1, MAP_VIEW_COLS, y < 0 ? 1 : 2, map->map_data, map->size);
 		}
 	}
